@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Python virtual environments and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Local archive bundles
+*.zip
+
+# Common temporary files
+*.tmp
+*.log
