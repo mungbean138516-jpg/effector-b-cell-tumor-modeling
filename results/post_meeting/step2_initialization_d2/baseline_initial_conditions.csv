@@ -1,0 +1,6 @@
+variable,baseline_value,note
+Tumor(0),2.0,tumor seed used in Step 2
+MDSC(0),500.0,tumor-free equilibrium
+NK(0),228758.1699346405,tumor-free equilibrium
+CTL(0),0.0,tumor-free equilibrium (0 in baseline)
+B(0),142857.14285714284,B steady state from the added B equation

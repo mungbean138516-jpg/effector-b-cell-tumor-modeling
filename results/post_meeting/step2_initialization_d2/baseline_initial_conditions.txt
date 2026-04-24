@@ -1,0 +1,10 @@
+Baseline initial conditions used in Step 2
+----------------------------------------
+Tumor(0) = 2.0
+MDSC(0)  = 500.0
+NK(0)    = 228758.1699346405
+CTL(0)   = 0.0  (when CTL is perturbed, a positive reference level is used)
+B(0)     = 142857.14285714284
+
+Current Step 2 multiplier set:
+0.1x, 0.2x, 0.5x, 1x, 2x, 5x, 10x
