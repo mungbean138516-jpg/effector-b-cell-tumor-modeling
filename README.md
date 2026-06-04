@@ -5,7 +5,7 @@ This folder is a curated subset of the larger `MACLEAN_LAB` workspace, assembled
 It keeps the strongest representative materials from the project:
 
 - core Julia modeling scripts
-- post-meeting refinement scripts, including the updated `step1_d2`, `step2_initialization_d2`, and `step3_heatmap` work
+- post-meeting refinement scripts, including the updated `step1_d2`, `step2_initialization_d2`, `step3_heatmap`, and equilibrium/Jacobian validation work
 - representative output figures and CSV summaries
 - presentation builder scripts
 - a small set of summary documents and PDFs
@@ -17,7 +17,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - model development
 - parameter sweeps
 - stochastic and deterministic analyses
-- post-meeting refinement across dense sweeps, initialization robustness, and the refined `b5 x b6` heatmap analysis
+- post-meeting refinement across dense sweeps, initialization robustness, the refined `b5 x b6` heatmap analysis, and equilibrium/Jacobian validation
 - presentation-ready summaries
 
 ## Folder structure
@@ -26,6 +26,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `code/post_meeting/step1_d2/`: updated dense-sweep refinement script and associated Step 1 follow-up materials.
 - `code/post_meeting/step2_initialization_d2/`: updated initialization-robustness script for the `d2` round.
 - `code/post_meeting/step3_heatmap/`: refined `b5 x b6` phase-diagram script plus the follow-up plotting-fix script.
+- `code/post_meeting/b6_equilibrium_jacobian/`: equilibrium-candidate refinement and finite-difference Jacobian stability screen for the `b6` continuation analysis.
 - `code/presentation_builders/`: Python scripts used to generate or assemble presentation materials.
 - `results/ctl_compare/`: representative outputs from the direct-vs-coupled CTL comparison.
 - `results/beta5/`: representative beta-5 deterministic and stochastic outputs.
@@ -35,8 +36,9 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/step2_initialization_d2/`: updated Step 2 robustness tables, heatmaps, and supplementary state plots.
 - `results/post_meeting/step3_heatmap/raw/`: original Step 3 heatmap outputs and boundary CSVs.
 - `results/post_meeting/step3_heatmap/fixed/`: corrected Step 3 presentation-ready plots and cleaned boundary CSV.
+- `results/post_meeting/b6_equilibrium_jacobian/`: equilibrium branch CSVs, hysteresis-gap plots, residual checks, and Jacobian stability summaries.
 - `docs/`: concise written summaries and the equation reference PDF.
-- `presentations/`: slide decks and PDFs that capture the project narrative in a presentation-ready format.
+- `presentations/`: slide decks, PDFs, and the final report that capture the project narrative in a presentation-ready format.
 
 ## Recommended upload scope
 
@@ -50,6 +52,8 @@ If you want an even lighter portfolio version, prioritize:
 - `results/beta6/`
 - `results/post_meeting/step2_initialization_d2/`
 - `results/post_meeting/step3_heatmap/fixed/`
+- `results/post_meeting/b6_equilibrium_jacobian/`
+- `presentations/final_report/`
 - `docs/`
 
 ## Notes
