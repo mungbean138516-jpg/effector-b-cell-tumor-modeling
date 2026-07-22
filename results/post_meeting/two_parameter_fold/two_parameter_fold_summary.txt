@@ -1,0 +1,10 @@
+ ┌─ Curve type: FoldCont
+ ├─ Number of points: 57
+ ├─ Type of vectors: Vector{Float64}
+ ├─ Parameters (:q6, :q5)
+ ├─ Parameter q5 starts at -5.0, ends at -3.0
+ ├─ Algo: PALC [Secant]
+ └─ Special points:
+
+- #  1, endpoint at q5 ≈ -5.00000000,                                                                     step =   0
+- #  2, endpoint at q5 ≈ -3.00000000,                                                                     step =  56

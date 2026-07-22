@@ -1,0 +1,9 @@
+ ┌─ Curve type: EquilibriumCont
+ ├─ Number of points: 246
+ ├─ Type of vectors: Vector{Float64}
+ ├─ Parameter q starts at -7.0, ends at -4.522878745280337
+ ├─ Algo: PALC [Secant]
+ └─ Special points:
+
+- #  1, endpoint at q ≈ -7.00000000,                                                                     step =   0
+- #  2, endpoint at q ≈ -4.52287875,                                                                     step = 245

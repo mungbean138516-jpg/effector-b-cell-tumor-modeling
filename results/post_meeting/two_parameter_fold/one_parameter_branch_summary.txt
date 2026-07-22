@@ -1,0 +1,10 @@
+ ┌─ Curve type: EquilibriumCont
+ ├─ Number of points: 256
+ ├─ Type of vectors: Vector{Float64}
+ ├─ Parameter q6 starts at -5.2, ends at -5.2
+ ├─ Algo: PALC [Bordered]
+ └─ Special points:
+
+- #  1, endpoint at q6 ≈ -5.20000000,                                                                     step =   0
+- #  2,       bp at q6 ≈ -6.17546653 ∈ (-6.17546653, -6.17546256), |δp|=4e-06, [converged], δ = ( 1,  0), step = 192
+- #  3, endpoint at q6 ≈ -5.20000000,                                                                     step = 255

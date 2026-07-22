@@ -1,0 +1,17 @@
+quantity,value
+classification,generic saddle-node (fold) bifurcation
+newton_converged,true
+augmented_residual,1.8038413377889142e-16
+q_star,-6.175467125821895
+b6_star,6.676254353545294e-7
+Tumor_star,4096.615537685266
+MDSC_star,704.8306929730034
+NK_star,201749.2814667452
+CTL_star,1006.3573189616782
+B_star,110518.16397552288
+smallest_singular_value,4.8924077693676445e-18
+second_smallest_singular_value,0.08405990686862372
+simple_zero_ratio,5.820144170530588e-17
+a01_parameter_transversality,0.07395772223296555
+b20_quadratic_nondegeneracy,-0.020081741423091423
+b30_cubic_diagnostic,0.008368165191381968
