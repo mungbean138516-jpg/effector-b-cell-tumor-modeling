@@ -7,6 +7,8 @@ using Statistics
 include(joinpath(@__DIR__, "EffectorBSDE.jl"))
 using .EffectorBSDE
 
+const CONDITION_SEED_STRIDE = 1_000_000
+
 function wilson_interval(k::Integer, n::Integer; z = 1.96)
     n > 0 || return (NaN, NaN)
     p = k / n
@@ -222,7 +224,10 @@ function run_near_fold_pilot(;
             nsims,
         )
         for replicate in 1:nsims
-            seed = base_seed + (condition_index - 1) * nsims + replicate
+            seed =
+                base_seed +
+                (condition_index - 1) * CONDITION_SEED_STRIDE +
+                replicate
             run = solve_sde_once(
                 b5 = b5,
                 b6 = b6,

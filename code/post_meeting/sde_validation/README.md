@@ -122,7 +122,8 @@ The grouped summary reports valid/invalid counts and Wilson intervals.
 The validated entry point requires at least 100 replicates per point and freezes
 `b5=1e-4`, `noise_scale=1`, and `dtmax=0.05`. Alternative stochastic models or
 numerical settings must write to a separate output set and receive their own
-validation.
+validation. Each `b6` condition has a fixed seed block, so increasing from 100
+to 200 replicates preserves the original first 100 trajectories.
 
 ## Interpretation boundary
 
