@@ -1,0 +1,7 @@
+quantity,value
+gap_tolerance_log10,0.5
+first_b6_with_hysteresis_gap_gt_tol,7.00420353617303e-7
+up_branch_first_T_below_1e3,NaN
+down_branch_first_T_below_1e3,1.1373883024874944e-6
+up_branch_first_T_below_1e5,NaN
+down_branch_first_T_below_1e5,7.00420353617303e-7

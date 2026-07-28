@@ -1,0 +1,29 @@
+Zero-eigenvalue equilibrium classification
+==========================================
+
+Classification: generic saddle-node (fold) bifurcation
+Converged: true
+Augmented residual: 1.8038413377889142e-16
+
+Critical equilibrium:
+  q* = -6.175467125821895
+  b6* = 6.676254353545294e-7
+  Tumor* = 4096.615537685266
+  MDSC* = 704.8306929730034
+  NK* = 201749.2814667452
+  CTL* = 1006.3573189616782
+  B* = 110518.16397552288
+
+Simple-zero diagnostics:
+  smallest singular value = 4.8924077693676445e-18
+  second-smallest singular value = 0.08405990686862372
+  ratio = 5.820144170530588e-17
+
+Nondegeneracy coefficients:
+  a01 = w'F_q = 0.07395772223296555
+  b20 = w'D²F[v,v] = -0.020081741423091423
+  b30 = w'D³F[v,v,v] = 0.008368165191381968
+
+Interpretation:
+  A simple zero eigenvalue plus nonzero a01 and b20
+  satisfies the generic local conditions for a saddle-node/fold.

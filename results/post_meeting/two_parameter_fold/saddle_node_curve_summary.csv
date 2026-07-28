@@ -1,0 +1,8 @@
+quantity,value
+number_of_fold_curve_points,57.0
+minimum_b5,1.0e-5
+maximum_b5,0.001
+minimum_critical_b6,1.9716340728183465e-7
+maximum_critical_b6,5.339638334551855e-6
+number_of_detected_codim2_special_points,2.0
+number_of_detected_cusps,0.0

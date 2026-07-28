@@ -1,0 +1,3 @@
+index,type,status,q5,b5,q6_nearest,b6_nearest,T_nearest,continuation_step,precision
+1,endpoint,converged,-5.0,1.0e-5,-6.70517368518706,1.9716340728183465e-7,4795.477076875026,0,0.0
+2,endpoint,converged,-3.0,0.001,-5.272488157695719,5.339638334551855e-6,3868.86073450101,56,0.0

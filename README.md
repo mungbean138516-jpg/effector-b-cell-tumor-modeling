@@ -1,16 +1,28 @@
-# GitHub-Ready MacLean Lab Package
+# Effector B-cell Tumor Modeling
 
-This folder is a curated subset of the larger `MACLEAN_LAB` workspace, assembled specifically for GitHub upload and portfolio-style presentation.
+This repository contains the curated computational analysis for an extended Tumor-MDSC-NK-CTL model with an effector B-cell compartment. The current research story moves from simulation-defined `b6` thresholds to equilibrium continuation, basin structure, and a formal saddle-node boundary in the `b5`-`b6` plane.
 
 It keeps the strongest representative materials from the project:
 
 - core Julia modeling scripts
-- post-meeting refinement scripts, including the updated `step1_d2`, `step2_initialization_d2`, `step3_heatmap`, and equilibrium/Jacobian validation work
+- post-meeting refinement scripts, including dense threshold sweeps, initialization robustness, `b5`-`b6` heatmaps, equilibrium/Jacobian validation, basin analysis, and formal continuation
 - representative output figures and CSV summaries
 - presentation builder scripts
 - a small set of summary documents and PDFs
 
-## Why this folder exists
+## June 2026 update
+
+The latest presentation is [`presentations/post_meeting/june_update/June_update.pdf`](presentations/post_meeting/june_update/June_update.pdf). Its main results are:
+
+- up/down continuation reveals history-dependent high- and low-tumor branches;
+- pseudo-arclength continuation identifies coexisting equilibria;
+- a simple real eigenvalue crosses zero at `b6* ~= 6.68e-7`, supporting a generic saddle-node classification;
+- basin maps show that initial Tumor, NK, and B levels determine which long-time regime is reached;
+- two-parameter fold continuation shows that stronger MDSC suppression (`b5`) raises the critical B-cell potency (`b6`) required for control.
+
+The slide-to-code and slide-to-output audit is documented in [`docs/june_update_figure_provenance.md`](docs/june_update_figure_provenance.md).
+
+## Why this repository exists
 
 The full project workspace contains many intermediate outputs, repeated drafts, zip archives, and presentation artifacts. This package trims that down to a cleaner set of materials that still shows the scope of the work:
 
@@ -27,6 +39,11 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `code/post_meeting/step2_initialization_d2/`: updated initialization-robustness script for the `d2` round.
 - `code/post_meeting/step3_heatmap/`: refined `b5 x b6` phase-diagram script plus the follow-up plotting-fix script.
 - `code/post_meeting/b6_equilibrium_jacobian/`: equilibrium-candidate refinement and finite-difference Jacobian stability screen for the `b6` continuation analysis.
+- `code/post_meeting/up_down_continuation/`: up/down sweeps and the cleaned branch, hysteresis, stability, and residual plots.
+- `code/post_meeting/formal_b6_continuation/`: fixed pseudo-arclength continuation workflow in `b6`.
+- `code/post_meeting/zero_eigenvalue_classification/`: local Jacobian, null-mode, and saddle-node nondegeneracy diagnostics.
+- `code/post_meeting/basin_of_attraction/`: coarse basin maps, summary plots, representative trajectories, and refined Tumor(0)-NK(0) boundary analysis.
+- `code/post_meeting/two_parameter_fold/`: continuation of the saddle-node in the `b5`-`b6` plane.
 - `code/presentation_builders/`: Python scripts used to generate or assemble presentation materials.
 - `results/ctl_compare/`: representative outputs from the direct-vs-coupled CTL comparison.
 - `results/beta5/`: representative beta-5 deterministic and stochastic outputs.
@@ -37,28 +54,30 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/step3_heatmap/raw/`: original Step 3 heatmap outputs and boundary CSVs.
 - `results/post_meeting/step3_heatmap/fixed/`: corrected Step 3 presentation-ready plots and cleaned boundary CSV.
 - `results/post_meeting/b6_equilibrium_jacobian/`: equilibrium branch CSVs, hysteresis-gap plots, residual checks, and Jacobian stability summaries.
+- `results/post_meeting/phase1_clean_branches/`: presentation-ready up/down continuation figures.
+- `results/post_meeting/formal_b6_continuation/`: formal equilibrium branches, stability, residuals, and exported continuation points.
+- `results/post_meeting/zero_eigenvalue_classification/`: critical equilibrium classification, eigenvalues, and local diagnostic figures.
+- `results/post_meeting/basin_of_attraction/`: basin summaries, representative trajectories, and a refined control boundary.
+- `results/post_meeting/two_parameter_fold/`: formal fold curve, residual checks, and numerical summaries.
 - `docs/`: concise written summaries and the equation reference PDF.
 - `presentations/`: slide decks, PDFs, and the final report that capture the project narrative in a presentation-ready format.
 
-## Recommended upload scope
+## Running the Julia analyses
 
-If you want a clean GitHub repository, this folder is already organized for that purpose. A good first upload would include everything here.
+Activate the repository environment before running a script:
 
-If you want an even lighter portfolio version, prioritize:
+```julia
+using Pkg
+Pkg.activate(".")
+Pkg.instantiate()
+```
 
-- `README.md`
-- `Project.toml`
-- `code/`
-- `results/beta6/`
-- `results/post_meeting/step2_initialization_d2/`
-- `results/post_meeting/step3_heatmap/fixed/`
-- `results/post_meeting/b6_equilibrium_jacobian/`
-- `presentations/final_report/`
-- `docs/`
+The continuation scripts also use `BifurcationKit`, `ForwardDiff`, and `Accessors`; these dependencies are included in `Project.toml`.
 
 ## Notes
 
 - This package intentionally omits zip archives, virtual environments, and a large number of duplicate outputs.
 - The post-meeting materials are organized by update round so newer files replace older flat duplicates.
 - The included figures and CSV files are selected for representativeness, not completeness.
+- Two presentation-only composite figures could not be traced to a standalone source image or generating script in the archived workspace; they are explicitly flagged in the figure-provenance audit.
 - The original full workspace remains unchanged outside this curated folder.
