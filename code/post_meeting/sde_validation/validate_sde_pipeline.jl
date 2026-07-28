@@ -281,16 +281,26 @@ function run_validation_suite(;
         ) for i in 1:50
     ]
     small_noise_metrics = trajectory_metrics.(small_noise_runs)
-    small_noise_invalid = count(m -> !m.valid, small_noise_metrics)
-    small_noise_mean = vec(
-        mean(
-            reduce(
-                hcat,
-                [run.solution.u[end] for run in small_noise_runs],
-            );
-            dims = 2,
-        ),
+    full_horizon_indices = findall(
+        m -> m.valid && m.termination_reason == "horizon",
+        small_noise_metrics,
     )
+    small_noise_invalid =
+        length(small_noise_runs) - length(full_horizon_indices)
+    small_noise_mean =
+        isempty(full_horizon_indices) ? fill(NaN, 5) :
+        vec(
+            mean(
+                reduce(
+                    hcat,
+                    [
+                        small_noise_runs[i].solution.u[end] for
+                        i in full_horizon_indices
+                    ],
+                );
+                dims = 2,
+            ),
+        )
     small_noise_ode = solve_ode_reference(
         b6 = 0.8 * DEFAULT_B6_STAR,
         config = small_noise_config,
@@ -314,7 +324,8 @@ function run_validation_suite(;
             n_invalid = small_noise_invalid,
             details =
                 "At noise_scale=0.025 and b6=0.8*b6*, normalized terminal " *
-                "ensemble-mean error versus the ODE must remain below 0.10.",
+                "ensemble-mean error versus the ODE must remain below 0.10; " *
+                "all paths must reach day 30.",
         ),
     )
 

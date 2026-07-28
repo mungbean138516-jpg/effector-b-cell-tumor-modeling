@@ -54,6 +54,13 @@ function assert_validation_ready(
             "Validation artifact does not match the current model, solver, " *
             "or dependency files. Rerun validation before the pilot.",
         )
+    :julia_version in propertynames(relevant) ||
+        error("Validation artifact lacks Julia runtime provenance.")
+    all(string.(relevant.julia_version) .== string(VERSION)) ||
+        error(
+            "Validation used a different Julia runtime. Rerun validation " *
+            "under Julia $(VERSION) before the pilot.",
+        )
     return validation_path
 end
 
