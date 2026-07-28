@@ -22,6 +22,29 @@ The latest presentation is [`presentations/post_meeting/june_update/June_update.
 
 The slide-to-code and slide-to-output audit is documented in [`docs/june_update_figure_provenance.md`](docs/june_update_figure_provenance.md).
 
+## July 2026 SDE validation update
+
+The existing stochastic CSVs under `results/beta5/` and `results/beta6/` are
+now labeled **preliminary and unvalidated**. The legacy solver could terminate
+when any immune population became negative and then count that incomplete path
+as a successful tumor because it did not verify the return code or day-365
+completion.
+
+A replacement pipeline is available in
+[`code/post_meeting/sde_validation/`](code/post_meeting/sde_validation/). It:
+
+- implements the original CIR one-year establishment criterion exactly;
+- separates that paper endpoint from a stricter sensitivity endpoint;
+- adds an explicit noise scale and common-versus-independent noise semantics;
+- rejects unexplained incomplete or failed trajectories;
+- saves per-replicate QC data, seeds, return codes, and Wilson intervals;
+- requires zero-noise, small-noise, reproducibility, nonnegativity,
+  paper-regression, and numerical-resolution gates before the near-fold pilot
+  can run.
+
+Do not use the legacy stochastic figures as evidence until they have been
+replaced by outputs from this validated workflow.
+
 ## Why this repository exists
 
 The full project workspace contains many intermediate outputs, repeated drafts, zip archives, and presentation artifacts. This package trims that down to a cleaner set of materials that still shows the scope of the work:
@@ -44,6 +67,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `code/post_meeting/zero_eigenvalue_classification/`: local Jacobian, null-mode, and saddle-node nondegeneracy diagnostics.
 - `code/post_meeting/basin_of_attraction/`: coarse basin maps, summary plots, representative trajectories, and refined Tumor(0)-NK(0) boundary analysis.
 - `code/post_meeting/two_parameter_fold/`: continuation of the saddle-node in the `b5`-`b6` plane.
+- `code/post_meeting/sde_validation/`: validated paper-criterion regression and focused stochastic pilot around the fold.
 - `code/presentation_builders/`: Python scripts used to generate or assemble presentation materials.
 - `results/ctl_compare/`: representative outputs from the direct-vs-coupled CTL comparison.
 - `results/beta5/`: representative beta-5 deterministic and stochastic outputs.
