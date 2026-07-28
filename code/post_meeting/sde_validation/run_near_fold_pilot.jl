@@ -19,7 +19,7 @@ end
 
 function assert_validation_ready(
     outdir::AbstractString,
-    git_sha::AbstractString,
+    source_hash::AbstractString,
 )
     validation_path = joinpath(outdir, "validation_gates.csv")
     isfile(validation_path) ||
@@ -47,15 +47,13 @@ function assert_validation_ready(
         error("One or more validation gates failed; pilot is blocked.")
     all(relevant.n_invalid .== 0) ||
         error("Validation contains invalid trajectories; pilot is blocked.")
-    if git_sha != "unknown"
-        :git_sha in propertynames(relevant) ||
-            error("Validation artifact lacks git_sha provenance.")
-        all(string.(relevant.git_sha) .== git_sha) ||
-            error(
-                "Validation artifact was produced from a different commit. " *
-                "Rerun validation for git_sha=$(git_sha).",
-            )
-    end
+    :source_fingerprint in propertynames(relevant) ||
+        error("Validation artifact lacks a source fingerprint.")
+    all(string.(relevant.source_fingerprint) .== source_hash) ||
+        error(
+            "Validation artifact does not match the current model, solver, " *
+            "or dependency files. Rerun validation before the pilot.",
+        )
     return validation_path
 end
 
@@ -67,8 +65,10 @@ function summarize_replicates(raw::DataFrame)
         n_valid = nrow(valid)
         n_paper = count(valid.paper_established)
         n_strict = count(valid.strict_established)
+        n_intermediate = count(valid.strict_state .== "persistent_intermediate")
         paper_lo, paper_hi = wilson_interval(n_paper, n_valid)
         strict_lo, strict_hi = wilson_interval(n_strict, n_valid)
+        established = valid[valid.paper_established .== true, :]
         removed_times = collect(skipmissing(valid.removal_time))
         removed_times = filter(isfinite, removed_times)
 
@@ -86,13 +86,17 @@ function summarize_replicates(raw::DataFrame)
                 p_paper_lo = paper_lo,
                 p_paper_hi = paper_hi,
                 n_strict_established = n_strict,
+                n_persistent_intermediate = n_intermediate,
                 p_strict_established =
                     n_valid == 0 ? NaN : n_strict / n_valid,
                 p_strict_lo = strict_lo,
                 p_strict_hi = strict_hi,
-                median_T_final =
+                median_T_final_all_valid =
                     n_valid == 0 ? NaN : median(valid.T_final),
-                median_T_max =
+                median_T_final_paper_established =
+                    isempty(established.T_final) ? NaN :
+                    median(established.T_final),
+                median_T_max_all_valid =
                     n_valid == 0 ? NaN : median(valid.T_max_saved),
                 median_removal_time =
                     isempty(removed_times) ? NaN : median(removed_times),
@@ -138,13 +142,13 @@ function build_summary_figure(summary::DataFrame, outpath::AbstractString)
 
     p2 = plot(
         x,
-        max.(summary.median_T_final, 1.0e-6);
+        max.(summary.median_T_final_paper_established, 1.0e-6);
         marker = :circle,
         linewidth = 2.5,
         yscale = :log10,
         xlabel = "b6 / b6*",
         ylabel = "Median final tumor",
-        title = "Final burden among valid trajectories",
+        title = "Final burden among paper-established trajectories",
         label = false,
     )
     vline!(p2, [1.0]; linestyle = :dash, color = :black, label = false)
@@ -170,11 +174,18 @@ function run_near_fold_pilot(;
         "sde_validation",
     ),
     git_sha::AbstractString = repository_git_sha(),
+    source_hash::AbstractString = source_fingerprint(),
     require_validation::Bool = true,
 )
-    nsims > 0 || throw(ArgumentError("nsims must be positive"))
+    nsims >= 100 || throw(ArgumentError("nsims must be at least 100"))
+    b5 == 1.0e-4 ||
+        throw(ArgumentError("validated pilot requires b5=1e-4"))
+    noise_scale == 1.0 ||
+        throw(ArgumentError("validated pilot requires noise_scale=1.0"))
+    dtmax == 0.05 ||
+        throw(ArgumentError("validated pilot requires dtmax=0.05"))
     mkpath(outdir)
-    require_validation && assert_validation_ready(outdir, git_sha)
+    require_validation && assert_validation_ready(outdir, source_hash)
 
     multipliers = [0.8, 0.9, 1.0, 1.1, 1.2]
     b6_values = DEFAULT_B6_STAR .* multipliers
@@ -204,9 +215,7 @@ function run_near_fold_pilot(;
             nsims,
         )
         for replicate in 1:nsims
-            # Reuse replicate seeds across b6 conditions to enable
-            # common-random-number comparisons.
-            seed = base_seed + replicate
+            seed = base_seed + (condition_index - 1) * nsims + replicate
             run = solve_sde_once(
                 b5 = b5,
                 b6 = b6,
@@ -221,6 +230,7 @@ function run_near_fold_pilot(;
                         run_id = (condition_index - 1) * nsims + replicate,
                         replicate = replicate,
                         git_sha = git_sha,
+                        source_fingerprint = source_hash,
                         julia_version = string(VERSION),
                         b5 = b5,
                         b6 = b6,

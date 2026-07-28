@@ -1,6 +1,7 @@
 module EffectorBSDE
 
 using OrdinaryDiffEq: Tsit5
+using SHA: sha256
 using SciMLBase:
     CallbackSet,
     DiscreteCallback,
@@ -18,6 +19,7 @@ export DEFAULT_B6_STAR,
        inoculation_start,
        model_B!,
        repository_git_sha,
+       source_fingerprint,
        solve_ode_reference,
        solve_sde_once,
        trajectory_metrics
@@ -37,6 +39,25 @@ function repository_git_sha()
     catch
         return "unknown"
     end
+end
+
+function source_fingerprint()
+    repository_root = normpath(joinpath(@__DIR__, "..", "..", ".."))
+    paths = [
+        joinpath(@__DIR__, "EffectorBSDE.jl"),
+        joinpath(@__DIR__, "validate_sde_pipeline.jl"),
+        joinpath(@__DIR__, "run_near_fold_pilot.jl"),
+        joinpath(repository_root, "Project.toml"),
+        joinpath(repository_root, "Manifest.toml"),
+    ]
+    payload = UInt8[]
+    for path in paths
+        append!(payload, codeunits(relpath(path, repository_root)))
+        push!(payload, 0x00)
+        append!(payload, read(path))
+        push!(payload, 0x00)
+    end
+    return bytes2hex(sha256(payload))
 end
 
 """

@@ -31,6 +31,7 @@ function paper_regression(;
     base_seed::Integer,
     dtmax::Float64,
     git_sha::AbstractString,
+    source_hash::AbstractString,
 )
     config = SimulationConfig(
         horizon = 365.0,
@@ -56,6 +57,7 @@ function paper_regression(;
                 (
                     replicate = replicate,
                     git_sha = git_sha,
+                    source_fingerprint = source_hash,
                     julia_version = string(VERSION),
                     solver = "SOSRI",
                     noise_scale = config.noise_scale,
@@ -104,6 +106,11 @@ function resolution_check(;
 )
     probabilities = Float64[]
     invalid_counts = Int[]
+    labels = [
+        "fixed_dt_$(dt_coarse)",
+        "fixed_dt_$(dt_fine)",
+        "adaptive_primary",
+    ]
     configs = (
         SimulationConfig(
             horizon = 365.0,
@@ -154,25 +161,36 @@ function resolution_check(;
         )
         push!(invalid_counts, nsims - length(valid))
     end
-    fixed_difference = abs(probabilities[1] - probabilities[2])
-    adaptive_difference = abs(probabilities[2] - probabilities[3])
-    difference = max(fixed_difference, adaptive_difference)
+    difference = maximum(probabilities) - minimum(probabilities)
     passed =
         all(==(0), invalid_counts) && isfinite(difference) &&
         difference <= 0.10
     return (
-        gate = "time_resolution_sensitivity",
-        passed = passed,
-        metric = difference,
-        lower = probabilities[1],
-        upper = probabilities[2],
-        target = 0.10,
-        n = 3nsims,
-        n_invalid = sum(invalid_counts),
-        details =
-            "Maximum probability difference across fixed dt=0.01, fixed " *
-            "dt=0.005, and the primary adaptive solver. lower/upper fields " *
-            "contain the two fixed-step estimates.",
+        result = (
+            gate = "time_resolution_sensitivity",
+            passed = passed,
+            metric = difference,
+            lower = minimum(probabilities),
+            upper = maximum(probabilities),
+            target = 0.10,
+            n = 3nsims,
+            n_invalid = sum(invalid_counts),
+            details =
+                "Range across fixed dt=0.01, fixed dt=0.005, and the " *
+                "primary adaptive solver; exact estimates are saved in " *
+                "time_resolution_estimates.csv.",
+        ),
+        rows = DataFrame(
+            solver_mode = labels,
+            adaptive = [config.adaptive for config in configs],
+            dt_initial = [config.dt for config in configs],
+            dtmax = [config.dtmax for config in configs],
+            reltol = [config.reltol for config in configs],
+            abstol = [config.abstol for config in configs],
+            p_paper_established = probabilities,
+            n = fill(nsims, length(labels)),
+            n_invalid = invalid_counts,
+        ),
     )
 end
 
@@ -190,6 +208,7 @@ function run_validation_suite(;
         "sde_validation",
     ),
     git_sha::AbstractString = repository_git_sha(),
+    source_hash::AbstractString = source_fingerprint(),
 )
     paper_reps >= 500 ||
         throw(ArgumentError("paper_reps must be at least 500"))
@@ -376,27 +395,37 @@ function run_validation_suite(;
         base_seed = base_seed + 1_000,
         dtmax = 0.05,
         git_sha = git_sha,
+        source_hash = source_hash,
     )
     append!(gates, DataFrame([regression.result]))
     resolution = resolution_check(
         nsims = resolution_reps,
         base_seed = base_seed + 10_000,
     )
-    append!(gates, DataFrame([resolution]))
+    append!(gates, DataFrame([resolution.result]))
+    resolution.rows.git_sha = fill(git_sha, nrow(resolution.rows))
+    resolution.rows.source_fingerprint =
+        fill(source_hash, nrow(resolution.rows))
+    resolution.rows.julia_version =
+        fill(string(VERSION), nrow(resolution.rows))
     gates.git_sha = fill(git_sha, nrow(gates))
+    gates.source_fingerprint = fill(source_hash, nrow(gates))
     gates.julia_version = fill(string(VERSION), nrow(gates))
 
     gate_path = joinpath(outdir, "validation_gates.csv")
     regression_path = joinpath(outdir, "paper_regression_replicates.csv")
+    resolution_path = joinpath(outdir, "time_resolution_estimates.csv")
     CSV.write(gate_path, gates)
     CSV.write(regression_path, regression.rows)
+    CSV.write(resolution_path, resolution.rows)
     println(gates)
     println("Saved: ", gate_path)
     println("Saved: ", regression_path)
+    println("Saved: ", resolution_path)
 
     all(gates.passed) ||
         error("One or more SDE validation gates failed; do not run the pilot.")
-    return gates, regression.rows
+    return gates, regression.rows, resolution.rows
 end
 
 function main()

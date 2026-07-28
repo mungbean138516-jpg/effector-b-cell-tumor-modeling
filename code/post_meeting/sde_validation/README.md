@@ -99,8 +99,9 @@ The validation script checks:
    `dt=0.01`, fixed `dt=0.005`, and the primary adaptive solver.
 
 The pilot reads `validation_gates.csv`, requires all six gates and zero invalid
-trajectories, and verifies that validation and pilot share the same Git commit.
-Any failed, missing, or stale gate blocks the pilot.
+trajectories, and verifies a SHA-256 fingerprint over the model, validation,
+pilot, `Project.toml`, and `Manifest.toml`. Any failed, missing, or stale gate
+blocks the pilot.
 
 ## Pilot design
 
@@ -117,8 +118,11 @@ At fixed `b5=1e-4`, the first pilot uses:
 Raw replicate rows include seed, solver status, termination reason, thresholds,
 final states, saved extrema, nonnegativity diagnostics, and solver rejections.
 The grouped summary reports valid/invalid counts and Wilson intervals.
-Replicate seeds are reused across the five `b6` conditions to support
-common-random-number comparisons.
+
+The validated entry point requires at least 100 replicates per point and freezes
+`b5=1e-4`, `noise_scale=1`, and `dtmax=0.05`. Alternative stochastic models or
+numerical settings must write to a separate output set and receive their own
+validation.
 
 ## Interpretation boundary
 
