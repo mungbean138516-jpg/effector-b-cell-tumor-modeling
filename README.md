@@ -12,16 +12,33 @@ It keeps the strongest representative materials from the project:
 
 ## July 2026 SDE validation update
 
-The latest stochastic update is available as both the original slide deck and a GitHub-friendly PDF:
+The July update now includes the validated source, tests, raw trajectory data,
+summary outputs, and presentation materials:
 
+- [`code/post_meeting/sde_validation/`](code/post_meeting/sde_validation/)
+- [`results/post_meeting/sde_validation/`](results/post_meeting/sde_validation/)
+- [`test/runtests.jl`](test/runtests.jl)
 - [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx)
 - [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf)
 
-After invalid, prematurely terminated trajectories were removed, a 1,000-trajectory near-fold pilot produced establishment probabilities of approximately 0.20-0.255 with overlapping confidence intervals and no monotonic stochastic threshold. The deterministic saddle-node therefore remains the primary result, while the next SDE question is true attractor switching rather than two-cell establishment.
+The replacement pipeline records solver status and termination reason, excludes
+invalid paths, and must pass six validation gates before a pilot can run. It
+reproduced the published four-state benchmark (`0.330`; published value
+`0.321711`) before evaluating the five-state B-cell extension.
 
-![Corrected near-fold SDE establishment pilot](results/post_meeting/sde_validation/near_fold_establishment_pilot.png)
+After invalid, prematurely terminated trajectories were removed, a
+1,000-trajectory near-fold pilot produced establishment probabilities of
+approximately 0.20-0.255 with overlapping confidence intervals and no monotonic
+stochastic threshold. The deterministic saddle-node therefore remains the
+primary result; this pilot measures two-cell establishment rather than true
+attractor switching.
 
-The result figure and a reproducibility audit are in [`results/post_meeting/sde_validation/`](results/post_meeting/sde_validation/) and [`docs/sde_validation_update.md`](docs/sde_validation_update.md). The corrected SDE source, tests, and raw pilot CSV were not found in the supplied local, shared-chat, or Slack materials, so this repository does not misattribute the older SDE script to the July result.
+![Validated near-fold SDE establishment pilot](results/post_meeting/sde_validation/near_fold_establishment_probability.png)
+
+The full provenance and interpretation audit is in
+[`docs/sde_validation_update.md`](docs/sde_validation_update.md). Earlier
+stochastic outputs under `results/beta5/` and `results/beta6/` remain
+preliminary and should not be used as validated evidence.
 
 ## June 2026 update
 
@@ -34,29 +51,6 @@ The latest presentation is [`presentations/post_meeting/june_update/June_update.
 - two-parameter fold continuation shows that stronger MDSC suppression (`b5`) raises the critical B-cell potency (`b6`) required for control.
 
 The slide-to-code and slide-to-output audit is documented in [`docs/june_update_figure_provenance.md`](docs/june_update_figure_provenance.md).
-
-## July 2026 SDE validation update
-
-The existing stochastic CSVs under `results/beta5/` and `results/beta6/` are
-now labeled **preliminary and unvalidated**. The legacy solver could terminate
-when any immune population became negative and then count that incomplete path
-as a successful tumor because it did not verify the return code or day-365
-completion.
-
-A replacement pipeline is available in
-[`code/post_meeting/sde_validation/`](code/post_meeting/sde_validation/). It:
-
-- implements the original CIR one-year establishment criterion exactly;
-- separates that paper endpoint from a stricter sensitivity endpoint;
-- adds an explicit noise scale and common-versus-independent noise semantics;
-- rejects unexplained incomplete or failed trajectories;
-- saves per-replicate QC data, seeds, return codes, and Wilson intervals;
-- requires zero-noise, small-noise, reproducibility, nonnegativity,
-  paper-regression, and numerical-resolution gates before the near-fold pilot
-  can run.
-
-Do not use the legacy stochastic figures as evidence until they have been
-replaced by outputs from this validated workflow.
 
 ## Why this repository exists
 
@@ -96,7 +90,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/zero_eigenvalue_classification/`: critical equilibrium classification, eigenvalues, and local diagnostic figures.
 - `results/post_meeting/basin_of_attraction/`: basin summaries, representative trajectories, and a refined control boundary.
 - `results/post_meeting/two_parameter_fold/`: formal fold curve, residual checks, and numerical summaries.
-- `results/post_meeting/sde_validation/`: corrected near-fold SDE pilot figure extracted from the July update deck.
+- `results/post_meeting/sde_validation/`: validation gates, raw replicate data, grouped estimates, and the corrected near-fold pilot figure.
 - `docs/`: concise written summaries and the equation reference PDF.
 - `presentations/`: slide decks, PDFs, and the final report, including the June deterministic update and July SDE validation update.
 
@@ -118,5 +112,5 @@ The continuation scripts also use `BifurcationKit`, `ForwardDiff`, and `Accessor
 - The post-meeting materials are organized by update round so newer files replace older flat duplicates.
 - The included figures and CSV files are selected for representativeness, not completeness.
 - Two presentation-only composite figures could not be traced to a standalone source image or generating script in the archived workspace; they are explicitly flagged in the figure-provenance audit.
-- The corrected July SDE code, tests, and raw trajectory data are not yet included because their source files could not be located; the older SDE script is retained only as historical work.
+- The original preliminary SDE implementation is retained as `code/core/legacy_b6_sde_threshold_refined.jl` for audit history; validated analyses should use `code/post_meeting/sde_validation/`.
 - The original full workspace remains unchanged outside this curated folder.

@@ -1,6 +1,6 @@
 # July 2026 SDE Validation Update
 
-This note documents the corrected stochastic validation update presented to the MacLean Lab group on July 28, 2026. It separates the reported scientific result from files that are still needed for full computational reproduction.
+This note documents the corrected stochastic validation update presented to the MacLean Lab group on July 28, 2026. The source, tests, raw trajectories, summary outputs, and presentation are included for computational reproduction.
 
 ## Why the earlier result changed
 
@@ -35,19 +35,29 @@ The formal saddle-node remains the primary result. This pilot measures tumor est
 
 ## Included files
 
+- `code/post_meeting/sde_validation/EffectorBSDE.jl`: model, solver, event handling, trajectory QC, and endpoint classifiers.
+- `code/post_meeting/sde_validation/validate_sde_pipeline.jl`: six-gate validation workflow.
+- `code/post_meeting/sde_validation/run_near_fold_pilot.jl`: gated five-point near-fold pilot.
+- `test/runtests.jl`: 26 regression and failure-classification tests.
+- `results/post_meeting/sde_validation/`: validation gates, 500 paper-regression trajectories, 1,000 near-fold trajectories, grouped estimates, and the final figure.
 - `presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx`: original six-slide update deck shared with the lab.
 - `presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf`: PDF rendering included for GitHub preview.
-- `results/post_meeting/sde_validation/near_fold_establishment_pilot.png`: the result panel extracted from slide 5 of the source deck.
+- `results/post_meeting/sde_validation/near_fold_establishment_probability.png`: the validated result panel used in slide 5.
 
 ## Reproducibility status
 
-The corrected SDE implementation, validation test suite, and raw pilot CSV were not present in the available MacLean Lab workspace, the archived GitHub package, the two supplied shared conversations, or the Slack attachments reviewed for this update. They have not been reconstructed or replaced with the older stochastic script.
+The original implementation was recovered from the shared conversation's Git bundle. Its five-commit history is preserved in this repository, ending at `bcb62b2` (`Add validated near-fold SDE results`). The output files identify code state `af4c97e3ad4c024157c582b46821af344f217e44`, source/dependency fingerprint `855828c86e165bfef1eae6129ef879b8db0862fc9373955000223d41e12ca734`, and Julia 1.12.6.
 
-In particular, `code/core/b6_sde_threshold_refined.jl` predates the corrected validation pipeline and should not be cited as the generator of the July result.
+The current `code/core/b6_sde_threshold_refined.jl` is a compatibility entry point that directs validated work to the new pipeline. The pre-correction implementation is retained separately as `code/core/legacy_b6_sde_threshold_refined.jl` and must not be cited as the generator of the July result.
 
-To complete the reproducible package, locate and add:
+To reproduce the checks and pilot from the repository root:
 
-1. the corrected SDE simulation and event-classification script;
-2. the 26-test validation suite;
-3. the raw 1,000-trajectory pilot output and summary CSV;
-4. the exact noise configuration, solver settings, and random seeds.
+```bash
+julia --project=. test/runtests.jl
+SDE_PAPER_REPS=500 SDE_RESOLUTION_REPS=100 \
+  julia --project=. code/post_meeting/sde_validation/validate_sde_pipeline.jl
+SDE_NSIMS=200 \
+  julia --project=. code/post_meeting/sde_validation/run_near_fold_pilot.jl
+```
+
+The pilot refuses to run if validation is missing, failed, or stale relative to the code/dependency fingerprint.
