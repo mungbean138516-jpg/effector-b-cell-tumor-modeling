@@ -10,6 +10,19 @@ It keeps the strongest representative materials from the project:
 - presentation builder scripts
 - a small set of summary documents and PDFs
 
+## July 2026 SDE validation update
+
+The latest stochastic update is available as both the original slide deck and a GitHub-friendly PDF:
+
+- [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx)
+- [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf)
+
+After invalid, prematurely terminated trajectories were removed, a 1,000-trajectory near-fold pilot produced establishment probabilities of approximately 0.20-0.255 with overlapping confidence intervals and no monotonic stochastic threshold. The deterministic saddle-node therefore remains the primary result, while the next SDE question is true attractor switching rather than two-cell establishment.
+
+![Corrected near-fold SDE establishment pilot](results/post_meeting/sde_validation/near_fold_establishment_pilot.png)
+
+The result figure and a reproducibility audit are in [`results/post_meeting/sde_validation/`](results/post_meeting/sde_validation/) and [`docs/sde_validation_update.md`](docs/sde_validation_update.md). The corrected SDE source, tests, and raw pilot CSV were not found in the supplied local, shared-chat, or Slack materials, so this repository does not misattribute the older SDE script to the July result.
+
 ## June 2026 update
 
 The latest presentation is [`presentations/post_meeting/june_update/June_update.pdf`](presentations/post_meeting/june_update/June_update.pdf). Its main results are:
@@ -59,8 +72,9 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/zero_eigenvalue_classification/`: critical equilibrium classification, eigenvalues, and local diagnostic figures.
 - `results/post_meeting/basin_of_attraction/`: basin summaries, representative trajectories, and a refined control boundary.
 - `results/post_meeting/two_parameter_fold/`: formal fold curve, residual checks, and numerical summaries.
+- `results/post_meeting/sde_validation/`: corrected near-fold SDE pilot figure extracted from the July update deck.
 - `docs/`: concise written summaries and the equation reference PDF.
-- `presentations/`: slide decks, PDFs, and the final report that capture the project narrative in a presentation-ready format.
+- `presentations/`: slide decks, PDFs, and the final report, including the June deterministic update and July SDE validation update.
 
 ## Running the Julia analyses
 
@@ -80,4 +94,5 @@ The continuation scripts also use `BifurcationKit`, `ForwardDiff`, and `Accessor
 - The post-meeting materials are organized by update round so newer files replace older flat duplicates.
 - The included figures and CSV files are selected for representativeness, not completeness.
 - Two presentation-only composite figures could not be traced to a standalone source image or generating script in the archived workspace; they are explicitly flagged in the figure-provenance audit.
+- The corrected July SDE code, tests, and raw trajectory data are not yet included because their source files could not be located; the older SDE script is retained only as historical work.
 - The original full workspace remains unchanged outside this curated folder.
