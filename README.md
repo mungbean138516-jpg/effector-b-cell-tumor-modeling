@@ -1,6 +1,6 @@
 # Effector B-cell Tumor Modeling
 
-This repository contains the curated computational analysis for an extended Tumor-MDSC-NK-CTL model with an effector B-cell compartment. The current research story moves from simulation-defined `b6` thresholds to equilibrium continuation, basin structure, and a formal saddle-node boundary in the `b5`-`b6` plane.
+This repository contains the curated computational analysis for an extended Tumor-MDSC-NK-CTL model with an effector B-cell compartment. The current research story moves from simulation-defined `b6` thresholds to equilibrium continuation, basin structure, a formal saddle-node boundary in the `b5`-`b6` plane, and a validated attractor-switching proof of concept.
 
 It keeps the strongest representative materials from the project:
 
@@ -9,6 +9,28 @@ It keeps the strongest representative materials from the project:
 - representative output figures and CSV summaries
 - presentation builder scripts
 - a small set of summary documents and PDFs
+
+## August 2026 attractor-switching proof of concept
+
+The latest analysis replaces the earlier two-cell establishment question with
+true basin-to-basin switching. At `b6 = 1.5e-6`, trajectories begin at either
+the refined low-tumor or high-tumor attractor, receive a 60-day common
+multiplicative-noise pulse, and then relax deterministically for 1,500 days.
+A switch is counted only when the full five-state endpoint converges to the
+opposite attractor after noise is removed.
+
+Across 100 trajectories per condition, low-to-high switching increased from
+`0.03` at `epsilon = 0.10` to `0.64` at `epsilon = 0.30`. No high-to-low switch
+was observed in the tested range. All 1,200 primary trajectories were valid,
+all seven gates passed, and the `epsilon = 0.20` estimate was unchanged under a
+finer time-step configuration.
+
+- [`code/post_meeting/attractor_switching_poc/`](code/post_meeting/attractor_switching_poc/)
+- [`results/post_meeting/attractor_switching_poc/`](results/post_meeting/attractor_switching_poc/)
+- [`docs/attractor_switching_poc.md`](docs/attractor_switching_poc.md)
+- [`test/attractor_switching_poc_tests.jl`](test/attractor_switching_poc_tests.jl)
+
+![Noise-induced attractor switching](results/post_meeting/attractor_switching_poc/attractor_switching_probability.png)
 
 ## July 2026 SDE validation update
 
@@ -75,6 +97,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `code/post_meeting/basin_of_attraction/`: coarse basin maps, summary plots, representative trajectories, and refined Tumor(0)-NK(0) boundary analysis.
 - `code/post_meeting/two_parameter_fold/`: continuation of the saddle-node in the `b5`-`b6` plane.
 - `code/post_meeting/sde_validation/`: validated paper-criterion regression and focused stochastic pilot around the fold.
+- `code/post_meeting/attractor_switching_poc/`: equilibrium-anchored stochastic basin-switching proof of concept.
 - `code/presentation_builders/`: Python scripts used to generate or assemble presentation materials.
 - `results/ctl_compare/`: representative outputs from the direct-vs-coupled CTL comparison.
 - `results/beta5/`: representative beta-5 deterministic and stochastic outputs.
@@ -91,6 +114,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/basin_of_attraction/`: basin summaries, representative trajectories, and a refined control boundary.
 - `results/post_meeting/two_parameter_fold/`: formal fold curve, residual checks, and numerical summaries.
 - `results/post_meeting/sde_validation/`: validation gates, raw replicate data, grouped estimates, and the corrected near-fold pilot figure.
+- `results/post_meeting/attractor_switching_poc/`: raw switching replicates, confidence intervals, validation gates, and representative trajectories.
 - `docs/`: concise written summaries and the equation reference PDF.
 - `presentations/`: slide decks, PDFs, and the final report, including the June deterministic update and July SDE validation update.
 

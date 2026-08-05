@@ -1,0 +1,4 @@
+initial_attractor,final_attractor,switched,noise_scale,seed
+low,high,true,0.1,23260861
+low,low,false,0.1,23260806
+high,high,false,0.3,32260806
