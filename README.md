@@ -10,6 +10,36 @@ It keeps the strongest representative materials from the project:
 - presentation builder scripts
 - a small set of summary documents and PDFs
 
+## July 2026 SDE validation update
+
+The July update now includes the validated source, tests, raw trajectory data,
+summary outputs, and presentation materials:
+
+- [`code/post_meeting/sde_validation/`](code/post_meeting/sde_validation/)
+- [`results/post_meeting/sde_validation/`](results/post_meeting/sde_validation/)
+- [`test/runtests.jl`](test/runtests.jl)
+- [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pptx)
+- [`presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf`](presentations/post_meeting/sde_validation_update/Effector_B_cell_SDE_Meeting_Update.pdf)
+
+The replacement pipeline records solver status and termination reason, excludes
+invalid paths, and must pass six validation gates before a pilot can run. It
+reproduced the published four-state benchmark (`0.330`; published value
+`0.321711`) before evaluating the five-state B-cell extension.
+
+After invalid, prematurely terminated trajectories were removed, a
+1,000-trajectory near-fold pilot produced establishment probabilities of
+approximately 0.20-0.255 with overlapping confidence intervals and no monotonic
+stochastic threshold. The deterministic saddle-node therefore remains the
+primary result; this pilot measures two-cell establishment rather than true
+attractor switching.
+
+![Validated near-fold SDE establishment pilot](results/post_meeting/sde_validation/near_fold_establishment_probability.png)
+
+The full provenance and interpretation audit is in
+[`docs/sde_validation_update.md`](docs/sde_validation_update.md). Earlier
+stochastic outputs under `results/beta5/` and `results/beta6/` remain
+preliminary and should not be used as validated evidence.
+
 ## June 2026 update
 
 The latest presentation is [`presentations/post_meeting/june_update/June_update.pdf`](presentations/post_meeting/june_update/June_update.pdf). Its main results are:
@@ -44,6 +74,7 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `code/post_meeting/zero_eigenvalue_classification/`: local Jacobian, null-mode, and saddle-node nondegeneracy diagnostics.
 - `code/post_meeting/basin_of_attraction/`: coarse basin maps, summary plots, representative trajectories, and refined Tumor(0)-NK(0) boundary analysis.
 - `code/post_meeting/two_parameter_fold/`: continuation of the saddle-node in the `b5`-`b6` plane.
+- `code/post_meeting/sde_validation/`: validated paper-criterion regression and focused stochastic pilot around the fold.
 - `code/presentation_builders/`: Python scripts used to generate or assemble presentation materials.
 - `results/ctl_compare/`: representative outputs from the direct-vs-coupled CTL comparison.
 - `results/beta5/`: representative beta-5 deterministic and stochastic outputs.
@@ -59,8 +90,9 @@ The full project workspace contains many intermediate outputs, repeated drafts, 
 - `results/post_meeting/zero_eigenvalue_classification/`: critical equilibrium classification, eigenvalues, and local diagnostic figures.
 - `results/post_meeting/basin_of_attraction/`: basin summaries, representative trajectories, and a refined control boundary.
 - `results/post_meeting/two_parameter_fold/`: formal fold curve, residual checks, and numerical summaries.
+- `results/post_meeting/sde_validation/`: validation gates, raw replicate data, grouped estimates, and the corrected near-fold pilot figure.
 - `docs/`: concise written summaries and the equation reference PDF.
-- `presentations/`: slide decks, PDFs, and the final report that capture the project narrative in a presentation-ready format.
+- `presentations/`: slide decks, PDFs, and the final report, including the June deterministic update and July SDE validation update.
 
 ## Running the Julia analyses
 
@@ -80,4 +112,5 @@ The continuation scripts also use `BifurcationKit`, `ForwardDiff`, and `Accessor
 - The post-meeting materials are organized by update round so newer files replace older flat duplicates.
 - The included figures and CSV files are selected for representativeness, not completeness.
 - Two presentation-only composite figures could not be traced to a standalone source image or generating script in the archived workspace; they are explicitly flagged in the figure-provenance audit.
+- The original preliminary SDE implementation is retained as `code/core/legacy_b6_sde_threshold_refined.jl` for audit history; validated analyses should use `code/post_meeting/sde_validation/`.
 - The original full workspace remains unchanged outside this curated folder.
