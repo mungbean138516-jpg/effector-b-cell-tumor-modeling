@@ -1,0 +1,13 @@
+setting,value
+b6,1.5e-6
+noise_horizon_days,60.0
+relax_horizon_days,1500.0
+noise_scales,0.0;0.1;0.15;0.2;0.25;0.3
+replicates_per_condition,100
+resolution_replicates,50
+base_seed,20260805
+noise_mode,paper_common
+solver,SOSRI
+dt_initial,0.01
+dtmax,0.05
+classification_tolerance,0.03
