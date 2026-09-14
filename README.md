@@ -1,5 +1,12 @@
 # Effector B-cell Tumor Modeling
 
+## Reviewer quick start
+
+For a concise explanation of the research question, model inputs, generated
+datasets, computational workflow, outputs, verified findings, and
+interpretation boundaries, begin with
+[`docs/application_reviewer_guide.md`](docs/application_reviewer_guide.md).
+
 This repository contains the curated computational analysis for an extended Tumor-MDSC-NK-CTL model with an effector B-cell compartment. The current research story moves from simulation-defined `b6` thresholds to equilibrium continuation, basin structure, a formal saddle-node boundary in the `b5`-`b6` plane, and a validated attractor-switching proof of concept.
 
 It keeps the strongest representative materials from the project:
